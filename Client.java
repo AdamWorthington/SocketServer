@@ -1,3 +1,4 @@
+
 import java.io.*;
 import java.net.*;
 import java.util.Scanner;
@@ -124,4 +125,5 @@ public class Client {
 	public void printValues() {
 		System.out.println(echoSocket + " " + in + " " + stdIn);
 	}
+
 }

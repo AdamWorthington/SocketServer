@@ -1,3 +1,4 @@
+
 import java.net.*;
 import java.util.ArrayList;
 import java.io.*;
@@ -29,41 +30,71 @@ public class Server extends Thread {
 	}
 
 	private void commands(String input) throws IOException {
-		String help = "<Hello - say hi to your friendly server\n"
-				+ "Bye - attempt to leave with grace.\n"
-				+ "whoami - find out who you trully are on the inside... of the server.\n"
-				+ "help - What is the number for 911 again?>";
+		String help = "</Hello - say hi to your friendly server\n"
+				+ "/Bye - attempt to leave with grace.\n"
+				+ "/whoami - find out who you trully are on the inside... of the server.\n"
+				+ "/help - What is the number for 911 again?\n"
+				+ "/list - Lists all online users>";
 		input = input.toLowerCase();
 		switch (input) {
-		case "portcheck":{
+
+		case "/portcheck":{
 			portCheck();
+
 			break;
 		}
-		case "hello": {
+		case "/hello": {
 			sendMessage("<Hey>");
 			break;
 		}
-		case "bye": {
+		case "/bye": {
 			sendMessage("<No don't leave.>");
 			break;
 		}
-		case "whoami": {
+		case "/list": {
+			ArrayList<String> names = onlineList();
+			String total = "<";
+			for(int i = 0; i < names.size(); i++){
+				if(i == names.size() - 1){
+					total += names.get(i);
+				}
+				else{
+					total = total + names.get(i) + "\n";
+				}
+			}
+			total += ">";
+			
+			sendMessage(total);
+			break;
+		}
+		case "/whoami": {
 			String p = socket.getRemoteSocketAddress().toString();
 			sendMessage("<You are " + currentUser + ". Connected on IP: " + p + ".>");
 			break;
 		}
-		case "help": {
+		case "/help": {
 			sendMessage(help);
 			break;
 
 		}
-		case "randomnum": {
+		case "/randomnum": {
 			double p = Math.random() * 100;
 			String s = "<" + String.format("%f", p) + ">";
 			sendMessage(s);
 			break;
 		}
+		case "/miniwatt":{
+			
+		}
+		case "/remoteexecute": {
+			
+			RemoteExecute b = new RemoteExecute("yo");
+		}
 		default: {
+			if (input.startsWith("/miniwatt")){
+				input = input.substring(9);
+				externalExec("miniWatt", input);
+			}
 			sendMessage("<Please enter a valid command.>");
 			break;
 		}
@@ -222,21 +253,28 @@ public class Server extends Thread {
 		}
 	}
 
-	@SuppressWarnings("finally")
+	
 	public ArrayList<String> onlineList() throws IOException {
-		String path = "C:\\Users\\aawor_000\\workspace\\TCPServer\\src\\Status\\Online.txt";
+		String file = "C:\\Users\\aawor_000\\workspace\\TCPServer\\src\\Status\\Online.txt";
+
 		ArrayList<String> names = new ArrayList<String>();
 
-		BufferedReader in = new BufferedReader(new FileReader(path));
-		try {
-			while (true) {
-				names.add(in.readLine());
-			}
-		} finally {
-			in.close();
-			return names;
+	
 
+		BufferedReader br = new BufferedReader(new FileReader(file));
+	
+
+		String line = null;
+
+		// Read from the original file and write to the new
+		// unless content matches data to be removed.
+		while ((line = br.readLine()) != null) {
+			names.add(line);
+			if (!line.trim().equals(currentUser)) {
+			}
 		}
+		br.close();
+		return names;
 	}
 	public void portCheck(){
 		String p = socket.getRemoteSocketAddress().toString();
@@ -252,4 +290,9 @@ public class Server extends Thread {
 			
 		}
 	}
+	public void externalExec(String name, String input){
+		
+	}
+
 }
+
