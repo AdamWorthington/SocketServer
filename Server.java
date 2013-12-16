@@ -36,7 +36,7 @@ public class Server extends Thread {
 		input = input.toLowerCase();
 		switch (input) {
 		case "portcheck":{
-			//portCheck();
+			portCheck();
 			break;
 		}
 		case "hello": {
@@ -108,7 +108,19 @@ public class Server extends Thread {
 		}
 
 	}
-
+	public void systemMessage(String s){
+		String userInput;
+		BufferedReader stdIn = new BufferedReader(new InputStreamReader(System.in));
+		try {
+			while ((userInput = stdIn.readLine()) != null) {
+				sendMessage(userInput);
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
 	public void access() throws IOException {
 
 		try {
